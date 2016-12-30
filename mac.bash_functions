@@ -1,7 +1,9 @@
 # Functions
 # #########
 
-echo "$0 .bash_functions        Start" >> $ORDERFILE
+if [ "${ORDERFILE}" != '' ];then
+    echo "$0 .bash_functions        Start" >> $ORDERFILE
+fi
 
 
 # Some example functions
@@ -647,4 +649,6 @@ newwin() {
     newtab "$@" # Simply pass through to 'newtab', which will examine the call stack to see how it was invoked.
 }
 
-echo "$0 .bash_functions        Stop" >> $ORDERFILE
+if [ "${ORDERFILE}" != '' ];then
+    echo "$0 .bash_functions        Stop" >> $ORDERFILE
+fi

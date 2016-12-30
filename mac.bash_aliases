@@ -2,7 +2,9 @@
 ## SSH aliases                         ##
 #########################################
 
-echo "$0 .bash_aliases         Start" >> $ORDERFILE
+if [ "${ORDERFILE}" != '' ];then
+    echo "$0 .bash_aliases         Start" >> $ORDERFILE
+fi
 
 
 alias liner='echo -en "\n****************************************\n****************************************\n"'
@@ -348,4 +350,6 @@ alias astart='/home/saherr/www/bin/astart'
 alias astop='/home/saherr/www/bin/astop'
 alias arestart='/home/saherr/www/bin/arestart'
 
-echo "$0 .bash_aliases         Stop" >> $ORDERFILE
+if [ "${ORDERFILE}" != '' ];then
+    echo "$0 .bash_aliases         Stop" >> $ORDERFILE
+fi
