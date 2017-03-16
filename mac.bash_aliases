@@ -43,7 +43,8 @@ alias wamgetmysql='/Users/sherr1/Desktop/NIE/WAM\ Project/wam_mysql_data/wam_mys
 alias wamgetblade='/Users/sherr1/Desktop/NIE/WAM\ Project/wam_blade_info_collector'
 alias wambladenet='cd ~/Desktop/NIE/WAM\ Project/wam_blade_info;rm -f port_usage.csv;grep -E "java|mysql" *.txt|./wam_blade_info_sed > port_usage.csv'
 
-
+alias sshutsonusdev='sshuttle --pidfile=/tmp/sshuttle.pid -Dr sa 172.16.40.96/29'
+alias sshutx='[[ -f /tmp/sshuttle.pid ]] && kill $(cat /tmp/sshuttle.pid) && echo "Disconnected."'
 #-------------------
 # Voice/MCP Aliases
 #-------------------
@@ -84,18 +85,18 @@ alias cdalias='alias|\grep -E "=.cd \."'
 	    alias ls='ls -hGF --color=auto --group-directories-first'
     fi
 
-	alias ll='ls -lv'
-	alias lx='ls -XB'         #  Sort by extension.
-	alias lk='ls -Sr'         #  Sort by size, biggest last.
-	alias lt='ls -tr'         #  Sort by date, most recent last.
-	alias lc='ls -tcr'        #  Sort by/show change time,most recent last.
-	alias lu='ls -tur'        #  Sort by/show access time,most recent last.
-	alias lm='ls -lv|less'		#  Pipe through 'less'
-	alias l.='ls -lvd .*'       #  Show only . files and directories.
+	alias ll='ls -lv'                       #  Long display with natural sort order by version number
+	alias lx='ls -XB'                       #  Sort by extension.
+	alias lk='ls -Sr'                       #  Sort by size, biggest last.
+	alias lt='ls -tr'                       #  Sort by date, most recent last.
+	alias lc='ls -tcr'                      #  Sort by/show change time,most recent last.
+	alias lu='ls -tur'                      #  Sort by/show access time,most recent last.
+	alias lm='ls -lv|less'                  #  Pipe through 'less'
+	alias l.='ls -lvd .*'                   #  Show only . files and directories.
 	alias lr='ls -R'			#  Recursive ls.
 	alias la='ls -A'			#  Show hidden files.
-	alias ldir='ls -ld -- */'	# Show only directories
-	alias tree='tree -CAsuh'		#  Nice alternative to 'recursive ls' ...
+	alias ldir='ls -ld -- */'	        # Show only directories
+	alias tree='tree -CAsuh --dirsfirst'	#  Nice alternative to 'recursive ls' ...
 
     if [[ "$SAHOS" != darwin15 ]]; then
     	alias dir='dir --color=auto'
@@ -178,7 +179,7 @@ alias nowdate='date +"%d-%m-%Y"'
 
 alias path='echo -e ${PATH//:/\\n}'
 
-alias top='htop'
+# alias top='htop'
 
 alias vnc='vncserver -geometry 1680x1050 -depth 24 -NeverShared -localhost'
 alias vncstatus='ps -fp $(pgrep -d, vnc)'
@@ -243,7 +244,7 @@ if exists atop; then
 	alias top='atop'
 elif exists htop
 then
-        alias top= htop
+        alias top=htop
 fi
 
 #### Network Aliases ####

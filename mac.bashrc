@@ -96,6 +96,9 @@ export HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
 export HISTCONTROL=ignoredups
 export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 
+export EDITOR=/usr/bin/vi
+export MP_EDITOR=/usr/bin/edit
+
 if [ "${ORDERFILE}" != '' ];then
     echo "$0 .bashrc    Stop" >> $ORDERFILE
 fi

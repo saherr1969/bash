@@ -39,7 +39,7 @@ export PATH="/opt/local/libexec/gnubin/:/opt/local/bin:/opt/local/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
 
 if [ -f $HOME/.bash_prompt ]; then
-    # include .bash_functions if it exists
+    # include .bash_prompt if it exists
     echo "out to	.bash_prompt" >> $ORDERFILE
     . "$HOME/.bash_prompt"
 fi
