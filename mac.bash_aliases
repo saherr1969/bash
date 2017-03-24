@@ -94,8 +94,8 @@ alias cdalias='alias|\grep -E "=.cd \."'
 	alias lm='ls -lv|less'                  #  Pipe through 'less'
 	alias l.='ls -lvd .*'                   #  Show only . files and directories.
 	alias lr='ls -R'			#  Recursive ls.
-	alias la='ls -A'			#  Show hidden files.
-	alias ldir='ls -ld -- */'	        # Show only directories
+	alias la='ls -al'			#  Show hidden files.
+	alias ldir='ls -ld -- */'	        #  Show only directories
 	alias tree='tree -CAsuh --dirsfirst'	#  Nice alternative to 'recursive ls' ...
 
     if [[ "$SAHOS" != darwin15 ]]; then
