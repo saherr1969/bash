@@ -97,7 +97,7 @@ else
     SU=${BCyan}         # User is normal (well ... most of us are).
 fi
 
-if [[ "$SAHOS" != darwin15 ]]; then
+if [[ "$SAHOS" != Darwin ]]; then
 	NCPU=$(grep -c 'processor' /proc/cpuinfo)    # Number of CPUs
 else
 	NCPU=$(sysctl -n hw.ncpu)

@@ -17,7 +17,7 @@ echo "$0 .profile	start" >> $ORDERFILE
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     echo "out to	.bashrc" >> $ORDERFILE
-    SAHOS=`expr "$OSTYPE" : '\(^[^\.]*\)'`
+    SAHOS=$(uname)                                  #`expr "$OSTYPE" : '\(^[^\.]*\)'`
     export $SAHOS
     echo $SAHOS
     if [ -f $HOME/.bashrc ]; then

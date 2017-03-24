@@ -56,7 +56,7 @@ trap _exit EXIT
 # Returns system load as percentage, i.e., '40' rather than '0.40)'.
 function load()
 {
-	if [[ "$SAHOS" != darwin15 ]]; then
+	if [[ "$SAHOS" != Darwin ]]; then
 		local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 	else
 		local SYSLOAD=$(sysctl -n vm.loadavg | cut -d " " -f2 | tr -d '.')
@@ -107,7 +107,7 @@ function disk_color()
 # Returns a color according to running/suspended jobs.
 function job_color()
 {
-	if [[ "$SAHOS" = darwin15 ]]; then
+	if [[ "$SAHOS" = Darwin ]]; then
 		if [ $(jobs -s | wc -l | cut -d " " -f8) -gt "0" ]; then
 			echo -en ${BRed}
 		elif [ $(jobs -r | wc -l | cut -d " " -f8) -gt "0" ] ; then
@@ -328,7 +328,7 @@ function my_ip() # Get IP adress on ethernet.
 {
 	if   [[ "$SAHOS" = cygwin ]]; then
 		MY_IP=$(ipconfig | awk '/IPv4 Address/ {print $14}')
-	elif [[ "$SAHOS" = darwin15 ]]; then
+	elif [[ "$SAHOS" = Darwin ]]; then
 		MY_IP=$(ipconfig getifaddr en0)
 		if [[ "$MY_IP" == "" ]]; then
 			MY_IP=$(ipconfig getifaddr en2)
@@ -357,7 +357,7 @@ function ii()   # Get current host related info.
 		echo -e "${BRed}Local IP Address:$NC\t "`my_ip`
 		echo -e "${BRed}Machine Info:$NC\t\t" `uname -a|cut -c1-80`
 		echo -e "${BRed}Machine stats:$NC\t\t"`uptime`
-		if [[ "$SAHOS" != darwin15 ]]; then
+		if [[ "$SAHOS" != Darwin ]]; then
 			echo -e "\n${BRed}Users logged on:$NC" ; w -hs | cut -d " " -f1 | sort | uniq
 		else
 			echo -e "\n${BRed}Users logged on:$NC" ; w -h | cut -d " " -f1 | sort | uniq
@@ -373,8 +373,8 @@ function ii()   # Get current host related info.
 	else
 		cls
 		echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - DISPLAY on ${BRed}$DISPLAY${NC}\n"
-		if exists /usr/games/fortune; then
-			/usr/games/fortune -s     # Makes our day a bit more fun.... :-)
+		if exists fortune; then
+			fortune -s     # Makes our day a bit more fun.... :-)
 		fi
 		echo -e "${BRed}Current date:$NC " `date`
 		echo -e "${BRed}You are logged on:$NC $HOSTNAME"

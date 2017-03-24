@@ -76,15 +76,7 @@ alias cdalias='alias|\grep -E "=.cd \."'
 # Add colors for filetype and  human-readable sizes by default on 'ls':
 #if [ -x /usr/bin/dircolors ]; then
 #	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    if [[ "$SAHOS" = darwin14 ]]; then
-	    alias ls='gls -hGF --color=auto --group-directories-first'
-    elif [[ "$SAHOS" = darwin15 ]]; then
-	    alias ls='ls -hGF --color=auto --group-directories-first'
-	    # alias ls='ls -hGF'
-    else
-	    alias ls='ls -hGF --color=auto --group-directories-first'
-    fi
-
+	alias ls='ls -hF --color=auto --group-directories-first'
 	alias ll='ls -lv'                       #  Long display with natural sort order by version number
 	alias lx='ls -XB'                       #  Sort by extension.
 	alias lk='ls -Sr'                       #  Sort by size, biggest last.
@@ -98,13 +90,8 @@ alias cdalias='alias|\grep -E "=.cd \."'
 	alias ldir='ls -ld -- */'	        #  Show only directories
 	alias tree='tree -CAsuh --dirsfirst'	#  Nice alternative to 'recursive ls' ...
 
-    if [[ "$SAHOS" != darwin15 ]]; then
-    	alias dir='dir --color=auto'
-	    alias vdir='vdir --color=auto'
-    else
-    	alias dir='gdir --color=auto'
-	    alias vdir='gvdir --color=auto'
-    fi
+        alias dir='dir --color=auto'
+        alias vdir='vdir --color=auto'
 
 	alias grep='grep -n --color=auto'
 	alias fgrep='fgrep -n --color=auto'
@@ -113,7 +100,7 @@ alias cdalias='alias|\grep -E "=.cd \."'
 
 # install  colordiff package :)
 if exists colordiff; then
-	alias diff='colordiff'
+    alias diff='colordiff'
 fi
 
 #-------------------------------------------------------------
@@ -169,7 +156,7 @@ alias mkdir='mkdir -pv'
 
 alias mysql='/usr/local/mysql/bin/mysql -p'
 
-if [[ "$SAHOS" != darwin15 ]]; then
+if [[ "$SAHOS" != Darwin ]]; then
 	alias mount='mount |column -t'
 fi
 
@@ -178,8 +165,6 @@ alias nowtime=now
 alias nowdate='date +"%d-%m-%Y"'
 
 alias path='echo -e ${PATH//:/\\n}'
-
-# alias top='htop'
 
 alias vnc='vncserver -geometry 1680x1050 -depth 24 -NeverShared -localhost'
 alias vncstatus='ps -fp $(pgrep -d, vnc)'
@@ -190,22 +175,16 @@ alias which='type -a'
 
 # if user is not root, pass all commands via sudo #
 if [ $UID -ne 0 ]; then
-	alias reboot='sudo reboot'
-	alias update='sudo apt-get upgrade'
-fi
-
-# if user is not root, pass all commands via sudo #
-if [ $UID -ne 0 ]; then
-	if [[ "$SAHOS" != darwin15 ]]; then
+	if [[ "$SAHOS" != Darwin ]]; then
 		alias ports="sudo netstat -antpul"
-		alias reboot='sudo reboot'
 	else
-	        alias port='sudo port'
-	        alias portupdate='port selfupdate && port upgrade outdated'
-	        alias npm='sudo npm'
+	        alias ports='netstat -an -f inet'
+	        
+                alias pip='sudo pip'
+
+                alias npm='sudo npm'
 
 	        alias netstat='sudo netstat'
-	        alias ports='netstat -an -f inet'
 	fi
 fi
 
@@ -216,12 +195,7 @@ alias header='curl -I'
 alias headerc='curl -I --compress'
 
 # do not delete / or prompt if deleting more than 3 files at a time #
-if [[ "$SAHOS" != darwin15 ]]; then
-	alias rm='rm -i --preserve-root'
-else
-	alias rm='rm -i --preserve-root'
-	alias tar="gnutar"
-fi
+alias rm='rm -i --preserve-root'
 
 # confirmation #
 alias mv='mv -i'
@@ -229,22 +203,15 @@ alias cp='cp -i'
 alias ln='ln -i'
 
 # Parenting changing perms on / #
-if [[ "$SAHOS" != darwin15 ]]; then
-	alias chown='sudo chown --preserve-root'
-	alias chmod='sudo chmod --preserve-root'
-	alias chgrp='sudo chgrp --preserve-root'
-else
-	alias chown='sudofunc;sudo chown'
-	alias chmod='sudofunc;sudo chmod'
-	alias chgrp='sudofunc;sudo chgrp'
-fi
+alias chown='sudo chown --preserve-root'
+alias chmod='sudo chmod --preserve-root'
+alias chgrp='sudo chgrp --preserve-root'
 
 # top is atop, just like vi is vim
 if exists atop; then
 	alias top='atop'
-elif exists htop
-then
-        alias top=htop
+elif exists htop; then
+        alias top='htop -d 5'
 fi
 
 #### Network Aliases ####
@@ -257,8 +224,6 @@ else
     alias ping='ping -n 10'
     alias fastping='ping -n 100 -w 200'
 fi
-
-
 
 ##### iptables Aliases ####
 ## shortcut  for iptables and pass it via sudo#
@@ -274,40 +239,47 @@ alias firewall=iptlist
 
 # distro specific  - Redhat #
 # install with apt-get
-if [[ "$SAHOS" != darwin15 ]]; then
+if [[ "$SAHOS" = Redhat ]]; then
 	alias apt-get="sudo apt-get"
 	alias updatey="sudo apt-get --yes"
 	# update on one command
 	alias update='sudo apt-get update && sudo apt-get upgrade'
+elif [[ "SAHOS" = Darwin ]]; then
+        alias port='sudo port'
+        alias portupdate='port selfupdate && port upgrade outdated'
 fi
-
 
 # reboot / halt / poweroff
-if [[ "$SAHOS" != darwin15 ]]; then
-	alias reboot='sudo /sbin/reboot'
-	alias poweroff='sudo /sbin/poweroff'
-	alias halt='sudo /sbin/halt'
-	alias shutdown='sudo /sbin/shutdown'
+if [[ "$SAHOS" != Darwin ]]; then
+    alias reboot='sudo /sbin/reboot'
+    alias poweroff='sudo /sbin/poweroff'
+    alias halt='sudo /sbin/halt'
+    alias shutdown='sudo /sbin/shutdown'
 fi
 
-## play video files in a current directory ##
-# cd ~/Download/movie-name
-# playavi or vlc
-alias playavi='mplayer *.avi'
-alias vlc='vlc *.avi'
+if exists mplayer; then
+    ## play video files in a current directory ##
+    # cd ~/Download/movie-name
+    # playavi or vlc
+    alias playavi='mplayer *.avi'
 
-# play all music files from the current directory #
-alias playwave='for i in *.wav; do mplayer "$i"; done'
-alias playogg='for i in *.ogg; do mplayer "$i"; done'
-alias playmp3='for i in *.mp3; do mplayer "$i"; done'
+    # play all music files from the current directory #
+    alias playwave='for i in *.wav; do mplayer "$i"; done'
+    alias playogg='for i in *.ogg; do mplayer "$i"; done'
+    alias playmp3='for i in *.mp3; do mplayer "$i"; done'
 
-# play files from nas devices #
-alias nplaywave='for i in /nas/multimedia/wave/*.wav; do mplayer "$i"; done'
-alias nplayogg='for i in /nas/multimedia/ogg/*.ogg; do mplayer "$i"; done'
-alias nplaymp3='for i in /nas/multimedia/mp3/*.mp3; do mplayer "$i"; done'
+    # play files from nas devices #
+    alias nplaywave='for i in /nas/multimedia/wave/*.wav; do mplayer "$i"; done'
+    alias nplayogg='for i in /nas/multimedia/ogg/*.ogg; do mplayer "$i"; done'
+    alias nplaymp3='for i in /nas/multimedia/mp3/*.mp3; do mplayer "$i"; done'
 
-# shuffle mp3/ogg etc by default #
-alias music='mplayer --shuffle *'
+    # shuffle mp3/ogg etc by default #
+    alias music='mplayer --shuffle *'
+fi
+
+if exists vlc; then
+    alias vlc='vlc *.avi'
+fi
 
 ## All of our servers eth1 is connected to the Internets via vlan / router etc  ##
 alias dnstop='dnstop -l 5  eth1'
