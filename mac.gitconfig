@@ -1,0 +1,21 @@
+[user]
+	name = Stephen Herr
+	email = stephen.herr@charter.com
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = /Users/sherr1/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[commit]
+	template = /Users/sherr1/.stCommitMsg
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	up = rebase
+	ci = commit
