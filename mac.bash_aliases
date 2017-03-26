@@ -244,7 +244,7 @@ if [[ "$SAHOS" = Redhat ]]; then
 	alias updatey="sudo apt-get --yes"
 	# update on one command
 	alias update='sudo apt-get update && sudo apt-get upgrade'
-elif [[ "SAHOS" = Darwin ]]; then
+elif [[ "$SAHOS" = Darwin ]]; then
         alias port='sudo port'
         alias portupdate='port selfupdate && port upgrade outdated'
 fi
