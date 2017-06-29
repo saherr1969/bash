@@ -7,9 +7,9 @@ File names are prepended with the appropriate OS type
 Files are evolving to be OS-agnostic.  Key to this is the $my_OS value that is set using uname function.
 
 # mac.bash_aliases
-    Contains a wide variety of aliases to make things easier and to deal with occaisional typos
+  Contains a wide variety of aliases to make things easier and to deal with occaisional typos
 # mac.bash_functions
-    Contains a variety of functions for various complex behaviors
+  Contains a variety of functions for various complex behaviors
 # mac.bash_prompt
   Contains the definitions of variables for 
       color escape codes
