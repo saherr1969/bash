@@ -30,4 +30,4 @@ Files are evolving to be OS-agnostic.  Key to this is the $my_OS value that is s
       .bash_prompt
   and sets a few universal environment variables
 # mac.vimrc
-    This is the vim initial configuration options to get it to always do syntax checking, show linenumbers, etc.
+  This is the vim initial configuration options to get it to always do syntax checking, show linenumbers, etc.
