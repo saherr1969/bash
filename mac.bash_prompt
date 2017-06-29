@@ -97,15 +97,17 @@ else
     SU=${BCyan}         # User is normal (well ... most of us are).
 fi
 
-if [[ "$SAHOS" != Darwin ]]; then
+if [[ "$my_OS" != Darwin ]]; then
 	NCPU=$(grep -c 'processor' /proc/cpuinfo)    # Number of CPUs
 else
 	NCPU=$(sysctl -n hw.ncpu)
 fi
 
-SLOAD=$(( 100 * ${NCPU} ))        # Small load
-MLOAD=$(( 200 * ${NCPU} ))        # Medium load
-XLOAD=$(( 400 * ${NCPU} ))        # Xlarge load
+if [[ ${NCPU} != '' ]]; then
+        SLOAD=$(( 100 * ${NCPU} ))        # Small load
+        MLOAD=$(( 200 * ${NCPU} ))        # Medium load
+        XLOAD=$(( 400 * ${NCPU} ))        # Xlarge load
+fi
 
 # Adds some text in the terminal frame (if applicable).
 # Now we construct the prompt.

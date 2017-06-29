@@ -156,7 +156,7 @@ alias mkdir='mkdir -pv'
 
 alias mysql='/usr/local/mysql/bin/mysql -p'
 
-if [[ "$SAHOS" != Darwin ]]; then
+if [[ "$my_OS" != Darwin ]]; then
 	alias mount='mount |column -t'
 fi
 
@@ -175,7 +175,7 @@ alias which='type -a'
 
 # if user is not root, pass all commands via sudo #
 if [ $UID -ne 0 ]; then
-	if [[ "$SAHOS" != Darwin ]]; then
+	if [[ "$my_OS" != Darwin ]]; then
 		alias ports="sudo netstat -antpul"
 	else
 	        alias ports='netstat -an -f inet'
@@ -215,7 +215,7 @@ elif exists htop; then
 fi
 
 #### Network Aliases ####
-if [[ "$SAHOS" != cygwin ]]; then
+if [[ "$my_OS" != cygwin ]]; then
     # Stop after sending 5 ECHO_REQUEST packets #
     alias ping='ping -c 5'
     # Do not wait interval 1 second, go fast #
@@ -230,27 +230,29 @@ fi
 alias ipt='sudo /sbin/iptables'
 
 # display all rules #
-alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
-alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
-alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
-alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
-alias firewall=iptlist
+if exists /sbin/iptables; then
+    alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
+    alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
+    alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
+    alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
+    alias firewall=iptlist
+fi
 
 
 # distro specific  - Redhat #
 # install with apt-get
-if [[ "$SAHOS" = Redhat ]]; then
+if [[ "$my_OS" = Redhat ]]; then
 	alias apt-get="sudo apt-get"
 	alias updatey="sudo apt-get --yes"
 	# update on one command
 	alias update='sudo apt-get update && sudo apt-get upgrade'
-elif [[ "$SAHOS" = Darwin ]]; then
+elif [[ "$my_OS" = Darwin ]]; then
         alias port='sudo port'
         alias portupdate='port selfupdate && port upgrade outdated'
 fi
 
 # reboot / halt / poweroff
-if [[ "$SAHOS" != Darwin ]]; then
+if [[ "$my_OS" != Darwin ]]; then
     alias reboot='sudo /sbin/reboot'
     alias poweroff='sudo /sbin/poweroff'
     alias halt='sudo /sbin/halt'

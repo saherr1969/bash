@@ -5,8 +5,18 @@ if [ "${ORDERFILE}" != '' ];then
     echo "$0 .bash_functions        Start" >> $ORDERFILE
 fi
 
+# ###############################
+# iTerm2 Functions
+# ###############################
+#function iterm2_print_user_vars() {
+#    echo $(pwd 2>/dev/null)
+#  iterm2_set_user_var gitBranch $(pwd 2> /dev/null)
+# iterm2_set_user_var gitBranch $((git branch 2> /dev/null) | grep \* | cut -c3-)
+#}
 
+# ###############################
 # Some example functions
+# ###############################
 function settitle() { echo -ne "\033]2;$@\a\033]1;$@\a"; }
 
 function sudofunc() { echo -e "\n${BRed}SUDO FUNCTION${NC}"; }
@@ -56,7 +66,7 @@ trap _exit EXIT
 # Returns system load as percentage, i.e., '40' rather than '0.40)'.
 function load()
 {
-	if [[ "$SAHOS" != Darwin ]]; then
+	if [[ "$my_OS" != Darwin ]]; then
 		local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 	else
 		local SYSLOAD=$(sysctl -n vm.loadavg | cut -d " " -f2 | tr -d '.')
@@ -107,7 +117,7 @@ function disk_color()
 # Returns a color according to running/suspended jobs.
 function job_color()
 {
-	if [[ "$SAHOS" = Darwin ]]; then
+	if [[ "$my_OS" = Darwin ]]; then
 		if [ $(jobs -s | wc -l | cut -d " " -f8) -gt "0" ]; then
 			echo -en ${BRed}
 		elif [ $(jobs -r | wc -l | cut -d " " -f8) -gt "0" ] ; then
@@ -326,9 +336,9 @@ function my_df()		 # Pretty-print of 'df' output.
 
 function my_ip() # Get IP adress on ethernet.
 {
-	if   [[ "$SAHOS" = cygwin ]]; then
+	if   [[ "$my_OS" = cygwin ]]; then
 		MY_IP=$(ipconfig | awk '/IPv4 Address/ {print $14}')
-	elif [[ "$SAHOS" = Darwin ]]; then
+	elif [[ "$my_OS" = Darwin ]]; then
 		MY_IP=$(ipconfig getifaddr en0)
 		if [[ "$MY_IP" == "" ]]; then
 			MY_IP=$(ipconfig getifaddr en2)
@@ -346,7 +356,7 @@ alias meminfo='free -m -l -t'
 
 function ii()   # Get current host related info.
 {
-	if [[ "$SAHOS" != cygwin ]]; then
+	if [[ "$my_OS" != cygwin ]]; then
 		clear
 		echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - DISPLAY on ${BRed}$DISPLAY${NC}\n"
 		if exists fortune; then
@@ -357,7 +367,7 @@ function ii()   # Get current host related info.
 		echo -e "${BRed}Local IP Address:$NC\t "`my_ip`
 		echo -e "${BRed}Machine Info:$NC\t\t" `uname -a|cut -c1-80`
 		echo -e "${BRed}Machine stats:$NC\t\t"`uptime`
-		if [[ "$SAHOS" != Darwin ]]; then
+		if [[ "$my_OS" != Darwin ]]; then
 			echo -e "\n${BRed}Users logged on:$NC" ; w -hs | cut -d " " -f1 | sort | uniq
 		else
 			echo -e "\n${BRed}Users logged on:$NC" ; w -h | cut -d " " -f1 | sort | uniq
@@ -442,26 +452,26 @@ function legend ()
 	echo " TIME:"
 	echo -e "    ${Green}Green${NC}     == machine load is low"
 	echo -e "    ${Orange}Orange${NC}    == machine load is medium"
-	echo "    Red       == machine load is high"
-	echo "    ALERT     == machine load is very high"
+	echo -e "    ${RED}Red${NC}       == machine load is high"
+	echo -e "    ${ALERT}ALERT${NC}     == machine load is very high"
 	echo " USER:"
-	echo "    Cyan      == normal user"
-	echo "    Orange    == SU to user"
-	echo "    Red       == root"
+	echo -e "    ${Cyan}Cyan${NC}      == normal user"
+	echo -e "    ${Orange}Orange${NC}    == SU to user"
+	echo -e "    ${Red}Red${NC}       == root"
 	echo " HOST:"
-	echo "    Cyan      == local session"
-	echo "    Green     == secured remote connection (via ssh)"
-	echo "    Red       == unsecured remote connection"
+	echo -e "    ${Cyan}Cyan${NC}      == local session"
+	echo -e "    ${Green}Green${NC}     == secured remote connection (via ssh)"
+	echo -e "    ${Red}Red${NC}       == unsecured remote connection"
 	echo " PWD:"
-	echo "    Green     == more than 10% free disk space"
-	echo "    Orange    == less than 10% free disk space"
-	echo "    ALERT     == less than 5% free disk space"
-	echo "    Red       == current user does not have write privileges"
-	echo "    Cyan      == current filesystem is size zero (like /proc)"
+	echo -e "    ${Green}Green${NC}     == more than 10% free disk space"
+	echo -e "    ${Orange}Orange${NC}    == less than 10% free disk space"
+	echo -e "    ${ALERT}ALERT${NC}     == less than 5% free disk space"
+	echo -e "    ${Red}Red${NC}       == current user does not have write privileges"
+	echo -e "    ${Cyan}Cyan${NC}      == current filesystem is size zero (like /proc)"
 	echo " >:"
-	echo "    White     == no background or suspended jobs in this shell"
-	echo "    Cyan      == at least one background job in this shell"
-	echo "    Orange    == at least one suspended job in this shell"
+	echo -e "    ${White}White${NC}     == no background or suspended jobs in this shell"
+	echo -e "    ${Cyan}Cyan${NC}      == at least one background job in this shell"
+	echo -e "    ${Orange}Orange${NC}    == at least one suspended job in this shell"
 }
 
 

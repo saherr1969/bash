@@ -17,9 +17,9 @@ echo "$0 .profile	start" >> $ORDERFILE
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     echo "out to	.bashrc" >> $ORDERFILE
-    SAHOS=$(uname)                                  #`expr "$OSTYPE" : '\(^[^\.]*\)'`
-    export $SAHOS
-    echo $SAHOS
+    my_OS=$(uname)                                  #`expr "$OSTYPE" : '\(^[^\.]*\)'`
+    export $my_OS
+    echo $my_OS
     if [ -f $HOME/.bashrc ]; then
 	. "$HOME/.bashrc"
     fi
@@ -37,6 +37,9 @@ fi
 # MacPorts Installer addition on 2016-10-06_at_16:02:35: adding an appropriate PATH variable for use with MacPorts.
 export PATH="/opt/local/libexec/gnubin/:/opt/local/bin:/opt/local/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
+
+# Adding an appropriate PATH variable for use with MySQL
+export PATH="/usr/local/mysql-5.7.17-macos10.12-x86_64/bin:$PATH"
 
 if [ -f $HOME/.bash_prompt ]; then
     # include .bash_prompt if it exists
