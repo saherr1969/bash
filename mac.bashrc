@@ -30,7 +30,6 @@ shopt -s checkhash
 shopt -s sourcepath
 shopt -s no_empty_cmd_completion
 shopt -s cmdhist
-shopt -s histappend histreedit histverify
 shopt -s extglob       # Necessary for programmable completion.
 
 # Disable options:
@@ -43,6 +42,8 @@ shopt -s checkwinsize
 
 # append to the history file, don't overwrite it
 shopt -s histappend
+shopt -s histreedit
+shopt -s histverify
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -76,11 +77,10 @@ fi
 
 if [ -z ${DISPLAY:=""} ]; then
     get_xserver
-    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) ||
-       ${XSERVER} == "unix" ]]; then
-          DISPLAY=":0.0"          # Display on local host.
+    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) || ${XSERVER} == "unix" ]]; then
+        DISPLAY=":0.0"          # Display on local host.
     else
-       DISPLAY=${XSERVER}:0.0     # Display on remote host.
+        DISPLAY=${XSERVER}:0.0     # Display on remote host.
     fi
 fi
 

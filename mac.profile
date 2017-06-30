@@ -30,16 +30,22 @@ if [ -d $HOME/bin ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-##
+########################################
 # Your previous /Users/sherr1/.profile file was backed up as /Users/sherr1/.profile.macports-saved_2016-10-06_at_16:02:35
-##
-
+########################################
 # MacPorts Installer addition on 2016-10-06_at_16:02:35: adding an appropriate PATH variable for use with MacPorts.
 export PATH="/opt/local/libexec/gnubin/:/opt/local/bin:/opt/local/sbin:$PATH"
-# Finished adapting your PATH environment variable for use with MacPorts.
-
 # Adding an appropriate PATH variable for use with MySQL
 export PATH="/usr/local/mysql-5.7.17-macos10.12-x86_64/bin:$PATH"
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+
+for fname in prompt functions aliases
+do
+    bash_file = ".bash
+    # include various .bash_XXXXXXXX files if the exist
+    echo "out to        .bash_${fname}
+
 
 if [ -f $HOME/.bash_prompt ]; then
     # include .bash_prompt if it exists
@@ -69,10 +75,8 @@ export HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
 export HISTCONTROL=ignoredups
 export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
 ii
 
 echo "$0 .profile	finish" >> $ORDERFILE
-
-
-
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
