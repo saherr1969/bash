@@ -9,25 +9,25 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-ORDERFILE="$HOME/order.log"
-echo $(date +%Y.%m.%d-$H:$M:$S) >> $ORDERFILE
-echo "$0 .profile	start" >> $ORDERFILE
+ORDERFILE="${HOME}/order.log"
+echo -e '\n\n'$(date +%Y.%m.%d-%H:%M:%S) >> ${ORDERFILE}
+echo ".profile  	start" >> ${ORDERFILE}
+
+export my_OS=$(uname)
+echo   ${my_OS}
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
-    echo "out to	.bashrc" >> $ORDERFILE
-    my_OS=$(uname)                                  #`expr "$OSTYPE" : '\(^[^\.]*\)'`
-    export $my_OS
-    echo $my_OS
-    if [ -f $HOME/.bashrc ]; then
-	. "$HOME/.bashrc"
+    if [ -f ${HOME}/.bashrc ]; then
+        echo "out to	    .bashrc" >> ${ORDERFILE}
+	. "${HOME}/.bashrc"
     fi
 fi
 
 # set PATH so it includes user's private bin if it exists
-if [ -d $HOME/bin ] ; then
-    PATH="$HOME/bin:$PATH"
+if [ -d ${HOME}/bin ] ; then
+    export PATH="${HOME}/bin:${PATH}"
 fi
 
 ########################################
@@ -42,32 +42,14 @@ export PATH="/usr/local/mysql-5.7.17-macos10.12-x86_64/bin:$PATH"
 
 for fname in prompt functions aliases
 do
-    bash_file = ".bash
+    BFNAME=${HOME}"/.bash_"${fname}
     # include various .bash_XXXXXXXX files if the exist
-    echo "out to        .bash_${fname}
-
-
-if [ -f $HOME/.bash_prompt ]; then
-    # include .bash_prompt if it exists
-    echo "out to	.bash_prompt" >> $ORDERFILE
-    . "$HOME/.bash_prompt"
-fi
-
-if [ -f $HOME/.bash_functions ]; then
-    # include .bash_functions if it exists
-    echo "out to	.bash_functions" >> $ORDERFILE
-    . "$HOME/.bash_functions"
-fi
-
-if [ -f $HOME/.bash_aliases ]; then
-    # include .bash_aliases if it exists
-    echo "out to	.bash_aliases" >> $ORDERFILE
-    . "$HOME/.bash_aliases"
-fi
-
-
-echo "$0 .profile	return" >> $ORDERFILE
-
+    if [ -f ${BFNAME} ]; then
+        echo "out to        ${BFNAME}" >> ${ORDERFILE}
+        . ${BFNAME}
+        echo ".profile	return" >> ${ORDERFILE}
+    fi
+done
 
 export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTIGNORE="&:bg:fg:h"
@@ -77,6 +59,7 @@ export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
+echo ".profile	finish" >> ${ORDERFILE}
+
 ii
 
-echo "$0 .profile	finish" >> $ORDERFILE
