@@ -30,16 +30,6 @@ if [ -d ${HOME}/bin ] ; then
     export PATH="${HOME}/bin:${PATH}"
 fi
 
-########################################
-# Your previous /Users/sherr1/.profile file was backed up as /Users/sherr1/.profile.macports-saved_2016-10-06_at_16:02:35
-########################################
-# MacPorts Installer addition on 2016-10-06_at_16:02:35: adding an appropriate PATH variable for use with MacPorts.
-export PATH="/opt/local/libexec/gnubin/:/opt/local/bin:/opt/local/sbin:$PATH"
-# Adding an appropriate PATH variable for use with MySQL
-export PATH="/usr/local/mysql-5.7.17-macos10.12-x86_64/bin:$PATH"
-# Finished adapting your PATH environment variable for use with MacPorts.
-
-
 for fname in prompt functions aliases
 do
     BFNAME=${HOME}"/.bash_"${fname}
@@ -51,11 +41,23 @@ do
     fi
 done
 
-export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
-export HISTIGNORE="&:bg:fg:h"
-export HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
-export HISTCONTROL=ignoredups
-export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
+########################################
+# Your previous /Users/sherr1/.profile file was backed up as /Users/sherr1/.profile.macports-saved_2016-10-06_at_16:02:35
+########################################
+if   [[ "${my_OS}" = Darwin ]]; then
+    # MacPorts Installer addition on 2016-10-06_at_16:02:35: adding an appropriate PATH variable for use with MacPorts.
+    export PATH="/opt/local/libexec/gnubin/:/opt/local/bin:/opt/local/sbin:$PATH"
+    # Adding an appropriate PATH variable for use with MySQL
+    export PATH="/usr/local/mysql-5.7.17-macos10.12-x86_64/bin:$PATH"
+    # Finished adapting your PATH environment variable for use with MacPorts.
+fi
+
+
+# export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
+# export HISTIGNORE="&:bg:fg:h"
+# export HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
+# export HISTCONTROL=ignoredups
+# export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
