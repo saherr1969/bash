@@ -6,24 +6,24 @@ File names are prepended with the appropriate OS type
 
 Files are evolving to be OS-agnostic.  Key to this is the $my_OS value that is set using uname function.
 
-# mac.bash_aliases
+# bash_aliases WAS:(mac.bash_aliases)
   Contains a wide variety of aliases to make things easier and to deal with occaisional typos
-# mac.bash_functions
+# bash_functions WAS:(mac.bash_functions)
   Contains a variety of functions for various complex behaviors
-# mac.bash_prompt
+# bash_prompt WAS:(mac.bash_prompt)
   Contains the definitions of variables for 
       color escape codes
       connection type
       user type
       processor/load values
       prompt PS1 definitions
-# mac.bashrc
+# bash_bashrc WAS:(mac.bashrc)
   Contains bash option and environmental settings
 # mac.gitconfig
   Contains global git configuration details and aliases
 # mac.gitignore_global
   Contains a list of file types and directories to never be added to a git repository
-# mac.profile
+# profile WAS:(mac.profile)
   Contaains calls to execute the contents of:
       .bash_aliases,
       .bash_functions,
