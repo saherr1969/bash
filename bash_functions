@@ -5,131 +5,121 @@ if [ "${ORDERFILE}" != '' ];then
     echo "$0 .bash_functions        Start" >> $ORDERFILE
 fi
 
-# ###############################
-# iTerm2 Functions
-# ###############################
-#function iterm2_print_user_vars() {
-#    echo $(pwd 2>/dev/null)
-#  iterm2_set_user_var gitBranch $(pwd 2> /dev/null)
-# iterm2_set_user_var gitBranch $((git branch 2> /dev/null) | grep \* | cut -c3-)
-#}
 
-# ###############################
 # Some example functions
-# ###############################
 function settitle() { echo -ne "\033]2;$@\a\033]1;$@\a"; }
 
 function sudofunc() { echo -e "\n${BRed}SUDO FUNCTION${NC}"; }
 
-function stealfocus() { echo -e "\033]1337;StealFocus\x7"; }
-
 function exists() {
-	for i; do
-		which $i >/dev/null 2>&1 || return 1
-	done
-	return 0
+    for i; do
+        which $i >/dev/null 2>&1 || return 1
+    done
+    return 0
 }
 
 function fexists() {
-	for i; do
-		if [ ! -e $1 ]; then
-			return 1
-		fi
-	done
-	return 0
+    for i; do
+        if [ ! -e $1 ]; then
+            return 1
+        fi
+    done
+    return 0
 }
 
 function check_agent ()
 {
-	if exists ssh-agent; then
-		if [[ -z $SSH_AUTH_SOCK ]]; then
-			if [[ -f ~/.agent.env ]]; then
-				. ~/.agent.env -s > /dev/null
-				if ! kill -0 $SSH_AGENT_PID > /dev/null 2>&1; then
-					ssh-agent -s > ~/.agent.env
-					. ~/.agent.env > /dev/null 2>&1
-				fi
-			else
-				ssh-agent -s > ~/.agent.env
-				. ~/.agent.env > /dev/null 2>&1
-			fi
-		fi
-	fi
+    if exists ssh-agent; then
+        if [[ -z $SSH_AUTH_SOCK ]]; then
+            if [[ -f ~/.agent.env ]]; then
+                . ~/.agent.env -s > /dev/null
+                if ! kill -0 $SSH_AGENT_PID > /dev/null 2>&1; then
+                    ssh-agent -s > ~/.agent.env
+                    . ~/.agent.env > /dev/null 2>&1
+                fi
+            else
+                ssh-agent -s > ~/.agent.env
+                . ~/.agent.env > /dev/null 2>&1
+            fi
+        fi
+    fi
 }
 
-function _exit()			  # Function to run upon exit of shell.
+function _exit()              # Function to run upon exit of shell.
 {
-	echo -e "${BRed}Hasta la vista, baby${NC}"
+    echo -e "${BRed}Hasta la vista, baby${NC}"
 }
 trap _exit EXIT
 
 # Returns system load as percentage, i.e., '40' rather than '0.40)'.
 function load()
 {
-	if [[ "$my_OS" != Darwin ]]; then
-		local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
-	else
-		local SYSLOAD=$(sysctl -n vm.loadavg | cut -d " " -f2 | tr -d '.')
-	fi
-	# System load of the current host.
-	echo $((10#$SYSLOAD))	   # Convert to decimal.
+        local SYSLOAD=$(uptime | awk -Fl '{print $2}' | cut -d " " -f3 | tr -d '.,')
+#  SAH replaced following OS dependent ways with above universal
+#    if [[ "${my_OS}" != Darwin ]]; then
+#        local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
+#    else
+#        local SYSLOAD=$(sysctl -n vm.loadavg | cut -d " " -f2 | tr -d '.')
+#    fi
+    # System load of the current host.
+    echo $((10#$SYSLOAD))       # Convert to decimal.
 }
 
 # Returns a color indicating system load.
 function load_color()
 {
-	local SYSLOAD=$(load)
-	if [ ${SYSLOAD} -gt ${XLOAD} ]; then
-		echo -en ${ALERT}
-	elif [ ${SYSLOAD} -gt ${MLOAD} ]; then
-		echo -en ${Red}
-	elif [ ${SYSLOAD} -gt ${SLOAD} ]; then
-		echo -en ${BRed}
-	else
-		echo -en ${Green}
-	fi
+    local SYSLOAD=$(load)
+    if [ ${SYSLOAD} -gt ${XLOAD} ]; then
+        echo -en ${ALERT}
+    elif [ ${SYSLOAD} -gt ${MLOAD} ]; then
+        echo -en ${Red}
+    elif [ ${SYSLOAD} -gt ${SLOAD} ]; then
+        echo -en ${BRed}
+    else
+        echo -en ${Green}
+    fi
 }
 
 # Returns a color according to free disk space in $PWD.
 function disk_color()
 {
-	if [ ! -w "${PWD}" ] ; then
-		echo -en ${Red}
-		# No 'write' privilege in the current directory.
-	elif [ -s "${PWD}" ] ; then
-		local used=$(command df -P "$PWD" | 
-					awk 'END {print $5}' | 
-					tr -d "%")
-#					cut -d "%" -f1)
-		if [ ${used} -gt 95 ]; then
-			echo -en ${ALERT}		   # Disk almost full (>95%).
-		elif [ ${used} -gt 90 ]; then
-			echo -en ${BRed}			# Free disk space almost gone.
-		else
-			echo -en ${Green}		   # Free disk space is ok.
-		fi
-	else
-		echo -en ${Cyan}
-		# Current directory is size '0' (like /proc, /sys etc).
-	fi
+    if [ ! -w "${PWD}" ] ; then
+        echo -en ${Red}
+        # No 'write' privilege in the current directory.
+    elif [ -s "${PWD}" ] ; then
+        local used=$(command df -P "$PWD" | 
+                    awk 'END {print $5}' | 
+                    tr -d "%")
+#                    cut -d "%" -f1)
+        if [ ${used} -gt 95 ]; then
+            echo -en ${ALERT}           # Disk almost full (>95%).
+        elif [ ${used} -gt 90 ]; then
+            echo -en ${BRed}            # Free disk space almost gone.
+        else
+            echo -en ${Green}           # Free disk space is ok.
+        fi
+    else
+        echo -en ${Cyan}
+        # Current directory is size '0' (like /proc, /sys etc).
+    fi
 }
 
 # Returns a color according to running/suspended jobs.
 function job_color()
 {
-	if [[ "$my_OS" = Darwin ]]; then
-		if [ $(jobs -s | wc -l | cut -d " " -f8) -gt "0" ]; then
-			echo -en ${BRed}
-		elif [ $(jobs -r | wc -l | cut -d " " -f8) -gt "0" ] ; then
-			echo -en ${BCyan}
-		fi
-	else
-		if [ $(jobs -s | wc -l) -gt "0" ]; then
-			echo -en ${BRed}
-		elif [ $(jobs -r | wc -l) -gt "0" ] ; then
-			echo -en ${BCyan}
-		fi
-	fi	
+    if [[ "${my_OS}" = Darwin ]]; then
+        if [ $(jobs -s | wc -l | cut -d " " -f8) -gt "0" ]; then
+            echo -en ${BRed}
+        elif [ $(jobs -r | wc -l | cut -d " " -f8) -gt "0" ] ; then
+            echo -en ${BCyan}
+        fi
+    else
+        if [ $(jobs -s | wc -l) -gt "0" ]; then
+            echo -en ${BRed}
+        elif [ $(jobs -r | wc -l) -gt "0" ] ; then
+            echo -en ${BCyan}
+        fi
+    fi    
 }
 
 #-------------------------------------------------------------
@@ -140,11 +130,11 @@ function job_color()
 
 function xtitle()
 {
-	case "$TERM" in
-		*term* | rxvt)
-			echo -en  "\033]0;$*\a" ;;
-		*)  ;;
-	esac
+    case "$TERM" in
+        *term* | rxvt)
+            echo -en  "\033]0;$*\a" ;;
+        *)  ;;
+    esac
 }
 
 
@@ -155,10 +145,10 @@ alias make='xtitle Making $(basename $PWD) ; make'
 # .. and functions
 function man()
 {
-	for i ; do
-		xtitle The $(basename $1|tr -d .[:digit:]) manual
-		command man -a "$i"
-	done
+    for i ; do
+        xtitle The $(basename $1|tr -d .[:digit:]) manual
+        command man -a "$i"
+    done
 }
 
 
@@ -168,11 +158,11 @@ function man()
 
 function te()  # wrapper around xemacs/gnuserv
 {
-	if [ "$(gnuclient -batch -eval t 2>&-)" == "t" ]; then
-	   gnuclient -q "$@";
-	else
-	   ( xemacs "$@" &);
-	fi
+    if [ "$(gnuclient -batch -eval t 2>&-)" == "t" ]; then
+       gnuclient -q "$@";
+    else
+       ( xemacs "$@" &);
+    fi
 }
 
 function soffice() { command soffice "$@" & }
@@ -195,61 +185,61 @@ function fe() { sudofunc; sudo find . -type f -iname '*'"${1:-}"'*' -exec ${2:-f
 #+ (needs a recent version of egrep).
 function fstr()
 {
-	OPTIND=1
-	local mycase=""
-	local usage="fstr: find string in files.
+    OPTIND=1
+    local mycase=""
+    local usage="fstr: find string in files.
 Usage: fstr [-i] \"pattern\" [\"filename pattern\"] "
-	while getopts :it opt
-	do
-		case "$opt" in
-		   i) mycase="-i " ;;
-		   *) echo "$usage"; return ;;
-		esac
-	done
-	shift $(( $OPTIND - 1 ))
-	if [ "$#" -lt 1 ]; then
-		echo "$usage"
-		return;
-	fi
-	sudofunc
-	sudo find . -type f -name "${2:-*}" -print0 | xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more
+    while getopts :it opt
+    do
+        case "$opt" in
+           i) mycase="-i " ;;
+           *) echo "$usage"; return ;;
+        esac
+    done
+    shift $(( $OPTIND - 1 ))
+    if [ "$#" -lt 1 ]; then
+        echo "$usage"
+        return;
+    fi
+    sudofunc
+    sudo find . -type f -name "${2:-*}" -print0 | xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more
 
 }
 
 
 function swap()
 { # Swap 2 filenames around, if they exist (from Uzi's bashrc).
-	local TMPFILE=tmp.$$
+    local TMPFILE=tmp.$$
 
-	[ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
-	[ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
-	[ ! -e $2 ] && echo "swap: $2 does not exist" && return 1
+    [ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
+    [ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
+    [ ! -e $2 ] && echo "swap: $2 does not exist" && return 1
 
-	mv "$1" $TMPFILE
-	mv "$2" "$1"
-	mv $TMPFILE "$2"
+    mv "$1" $TMPFILE
+    mv "$2" "$1"
+    mv $TMPFILE "$2"
 }
 
-function puff()	  # Handy Extract Program
+function puff()      # Handy Extract Program
 {
-	if [ -f $1 ] ; then
-		case $1 in
-			*.tar.bz2)	tar xvjf $1		;;
-			*.tar.gz)	tar xvzf $1		;;
-			*.bz2)		bunzip2 $1		;;
-			*.rar)		unrar x $1		;;
-			*.gz)		gunzip $1		;;
-			*.tar)		tar xvf $1		;;
-			*.tbz2)		tar xvjf $1		;;
-			*.tgz)		tar xvzf $1		;;
-			*.zip)		unzip $1		;;
-			*.Z)		uncompress $1   ;;
-			*.7z)		7z x $1			;;
-			*)			echo "'$1' cannot be extracted via >puff<" ;;
-		esac
-	else
-		echo "'$1' is not a valid file!"
-	fi
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)      tar xvjf $1;;
+            *.tar.gz)       tar xvzf $1;;
+            *.bz2)          bunzip2 $1;;
+            *.rar)          unrar x $1;;
+            *.gz)           gunzip $1;;
+            *.tar)          tar xvf $1;;
+            *.tbz2)         tar xvjf $1;;
+            *.tgz)          tar xvzf $1;;
+            *.zip)          unzip $1;;
+            *.Z)            uncompress $1;;
+            *.7z)           7z x $1;;
+            *)              echo "'$1' cannot be extracted via >puff<" ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
 }
 
 
@@ -270,16 +260,16 @@ function sanitize() { chmod -R u=rwX,g=rX,o= "$@" ;}
 # SCP a single file to all Network Intelligence Lab boxes into the /home/saherr dir
 function scpdist()
 {
-	for i in {5..8}
-	do
-		echo nie0$i
-		scp $1 nie0$i:$1
-	done
-	for i in {1..2}
-	do
-		echo sde0$i
-		scp $1 sde0$i:$1
-	done
+    for i in {5..8}
+    do
+        echo nie0$i
+        scp $1 nie0$i:$1
+    done
+    for i in {1..2}
+    do
+        echo sde0$i
+        scp $1 sde0$i:$1
+    done
 }
 
 #-------------------------------------------------------------
@@ -293,185 +283,183 @@ function pp() { my_ps -f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
 
 function killps()   # kill by process name
 {
-	local pid pname sig="-TERM"   # default signal
-	if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-		echo "Usage: killps [-SIGNAL] pattern"
-		return;
-	fi
-	if [ $# = 2 ]; then sig=$1 ; fi
-	for pid in $(my_ps| awk '!/awk/ && $0~pat { print $1 }' pat=${!#} )
-	do
-		pname=$(my_ps | awk '$1~var { print $5 }' var=$pid )
-		if ask "Kill process $pid <$pname> with signal $sig?"
-			then kill $sig $pid
-		fi
-	done
+    local pid pname sig="-TERM"   # default signal
+    if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+        echo "Usage: killps [-SIGNAL] pattern"
+        return;
+    fi
+    if [ $# = 2 ]; then sig=$1 ; fi
+    for pid in $(my_ps| awk '!/awk/ && $0~pat { print $1 }' pat=${!#} )
+    do
+        pname=$(my_ps | awk '$1~var { print $5 }' var=$pid )
+        if ask "Kill process $pid <$pname> with signal $sig?"
+            then kill $sig $pid
+        fi
+    done
 }
 
-function my_df()		 # Pretty-print of 'df' output.
-{					   # Inspired by 'dfc' utility.
-	for fs ; do
+function my_df()        # Pretty-print of 'df' output.
+{                       # Inspired by 'dfc' utility.
+    STARS=20
+    half_col=$(( 3 * ${COLUMNS} / 6 ))
+    if [ ${STARS} -lt ${half_col} ]; then
+        STARS=${half_col}
+    fi
+    if [ ${STARS} -gt 100  ];then
+        STARS=100
+    fi
+    for fs ; do
 
-		if [ ! -d $fs ]
-		then
-		  echo -e $fs" :No such file or directory" ; continue
-		fi
+        if [ ! -d $fs ]
+        then
+          echo -e $fs":  No such file or directory" ; continue
+        fi
 
-		local info=( $(command df -P $fs | awk 'END{ print $2,$3,$5 }') )
-		local free=( $(command df -Pkh $fs | awk 'END{ print $4 }') )
-		local nbstars=$(( 20 * ${info[1]} / ${info[0]} ))
-		local out="["
-		for ((j=0;j<20;j++)); do
-			if [ ${j} -lt ${nbstars} ]; then
-			   out=$out"*"
-			else
-			   out=$out"-"
-			fi
-		done
-		out=${info[2]}" "$out"] ("$free" free on "$fs")"
-		echo -e $out
-	done
+        local info=( $(command df -P $fs | awk 'END{ print $2,$3,$5 }') )
+        local free=( $(command df -Pkh $fs | awk 'END{ print $4 }') )
+        local nbstars=$(( ${STARS} * ${info[1]} / ${info[0]} ))
+        local out="["
+        for ((j=0;j<${STARS};j++)); do
+            if [ ${j} -lt ${nbstars} ]; then
+               out=$out"*"
+            else
+               out=$out"-"
+            fi
+        done
+        out=${info[2]}" "$out"] ("$free" free on "$fs")"
+        echo -e $out
+    done
 }
 
 
-function my_ip() # Get IP adress on ethernet.
+function my_ip()        # Get IP adress on ethernet.
 {
-	if   [[ "$my_OS" = cygwin ]]; then
-		MY_IP=$(ipconfig | awk '/IPv4 Address/ {print $14}')
-	elif [[ "$my_OS" = Darwin ]]; then
-		MY_IP=$(ipconfig getifaddr en0)
-		if [[ "$MY_IP" == "" ]]; then
-			MY_IP=$(ipconfig getifaddr en2)
-		fi
-	else
-		MY_IP=$(/sbin/ifconfig eth1 | awk '/inet/ { print $2 } ' | sed -e s/addr://)
-		if [[ "$MY_IP" == "" ]]; then
-			MY_IP=$(/sbin/ifconfig eth2 | awk '/inet/ { print $2 } ' | sed -e s/addr://)
-		fi
-	fi
-	echo ${MY_IP:-"Not connected"}
+    if   [[ "${my_OS}" = cygwin ]]; then
+        MY_IP=$(ipconfig | awk '/IPv4 Address/ {print $14}')
+    elif [[ "${my_OS}" = Darwin ]]; then
+        # MY_IP=$(ipconfig getifaddr en0)
+        MY_IP=$(ifconfig|\grep -v '127\.0\.0\.1'|\grep 'inet '|awk '{print $2}')
+        if [[ "$MY_IP" == "" ]]; then
+            MY_IP=$(ipconfig getifaddr en2)
+        fi
+    else
+        if exists ip; then
+            MY_IP=$(ip addr|\grep -v '127\.0\.0\.1'|\grep 'inet '|awk '{print $2}')
+#        elif
+#            MY_IP=$(/sbin/ifconfig eth1 | awk '/inet/ { print $2 } ' | sed -e s/addr://)
+#            if [[ "$MY_IP" == "" ]]; then
+#                MY_IP=$(/sbin/ifconfig eth2 | awk '/inet/ { print $2 } ' | sed -e s/addr://)
+#            fi
+        fi
+    fi
+    echo ${MY_IP:-"Not connected"}
 }
 
 alias meminfo='free -m -l -t'
 
 function ii()   # Get current host related info.
 {
-	if [[ "$my_OS" != cygwin ]]; then
-		clear
-		echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - DISPLAY on ${BRed}$DISPLAY${NC}\n"
-		if exists fortune; then
-			fortune -s     # Makes our day a bit more fun.... :-)
-		fi
-		echo -e "\n${BRed}Current date:$NC\t\t" `date`
-		echo -e "${BRed}You are logged on:$NC\t $HOSTNAME"
-		echo -e "${BRed}Local IP Address:$NC\t "`my_ip`
-		echo -e "${BRed}Machine Info:$NC\t\t" `uname -a|cut -c1-80`
-		echo -e "${BRed}Machine stats:$NC\t\t"`uptime`
-		if [[ "$my_OS" != Darwin ]]; then
-			echo -e "\n${BRed}Users logged on:$NC" ; w -hs | cut -d " " -f1 | sort | uniq
-		else
-			echo -e "\n${BRed}Users logged on:$NC" ; w -h | cut -d " " -f1 | sort | uniq
-		fi
-		echo -e "\n${BRed}Memory stats:$NC" ; meminfo
-		if [[ "$HOSTNAME" = nie08mpwdco ]]; then
-                        echo -e "\n${BRed}Diskspace:$NC" ; my_df / $HOME /data
-                else
-                        echo -e "\n${BRed}Diskspace:$NC" ; my_df / $HOME
-                fi
-#		echo -e "\n${BRed}Open connections:$NC "; netstat -pan --inet;
-		echo
-	else
-		cls
-		echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - DISPLAY on ${BRed}$DISPLAY${NC}\n"
-		if exists fortune; then
-			fortune -s     # Makes our day a bit more fun.... :-)
-		fi
-		echo -e "${BRed}Current date:$NC " `date`
-		echo -e "${BRed}You are logged on:$NC $HOSTNAME"
-		echo -e "${BRed}Local IP Address:$NC" `my_ip`
-		echo -e "${BRed}Machine Info:$NC "`uname -a| cut -c1-80`
-		echo -e "\n${BRed}Diskspace:$NC " ; my_df / $HOME
-#               echo -e "\n${BRed}Users logged on:$NC " ; w -hs | cut -d " " -f1 | sort | uniq
-#               echo -e "\n${BRed}Machine stats:$NC " ; uptime
-#               echo -e "\n${BRed}Memory stats:$NC " ; free
-#               echo -e "\n${BRed}Open connections:$NC "; netstat -anp TCP;
+    if [[ "${my_OS}" != cygwin ]]; then
+        clear
+        else
+                cls
+        fi
+        echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - DISPLAY on ${BRed}$DISPLAY${NC}\n"
+        if exists fortune; then
+            fortune -s     # Makes our day a bit more fun.... :-)
+        fi
                 echo
-	fi
+        echo -e "${BRed}Current date:${NC}\t\t" `date`
+        echo -e "${BRed}You are logged on:${NC}\t $HOSTNAME"
+        echo -e "${BRed}Local IP Address:${NC}\t" `my_ip`
+        echo -e "${BRed}Machine Info:${NC}\t\t" `uname -a|cut -c1-80`
+    if [[ "${my_OS}" != cygwin ]]; then
+        echo -e "${BRed}Machine stats:${NC}\t\t" `uptime`
+        fi
+        echo -e "\n${BRed}Users logged on:${NC}"; who | cut -d " " -f1 | sort | uniq -c|awk '{print $2, $1}'
+        echo -e "\n${BRed}Memory stats:${NC}"; meminfo
+                echo -e "\n${BRed}Diskspace:${NC}";
+        if [[ "${my_OS}" != Darwin ]]; then
+                        my_df / ${HOME} /data
+                else
+                        my_df / ${HOME}
+                fi
+        echo
 }
 
 #-------------------------------------------------------------
 # Misc utilities:
 #-------------------------------------------------------------
 
-function repeat()	   # Repeat n times command.
+function repeat()       # Repeat n times command.
 {
-	local i max
-	max=$1; shift;
-	for ((i=1; i <= max ; i++)); do  # --> C-like syntax
-		eval "$@";
-	done
+    local i max
+    max=$1; shift;
+    for ((i=1; i <= max ; i++)); do  # --> C-like syntax
+        eval "$@";
+    done
 }
 
 
-function ask()		  # See 'killps' for example of use.
+function ask()          # See 'killps' for example of use.
 {
-	echo -n "$@" '[y/n] ' ; read ans
-	case "$ans" in
-		y*|Y*) return 0 ;;
-		*) return 1 ;;
-	esac
+    echo -n "$@" '[y/n] ' ; read ans
+    case "$ans" in
+        y*|Y*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 function corename()   # Get name of app that created a corefile.
 {
-	for file ; do
-		echo -n $file : ; gdb --core=$file --batch | head -1
-	done
+    for file ; do
+        echo -n $file : ; gdb --core=$file --batch | head -1
+    done
 }
 
 
 function get_xserver ()
 {
-	case $TERM in
-		xterm )
-			XSERVER=$(who am i | awk '{print $NF}' | tr -d ')''(' )
-			# Ane-Pieter Wieringa suggests the following alternative:
-			 # I_AM=$(who am i)
-			 # SERVER=${I_AM#*(}
-			 # SERVER=${SERVER%*)}
-			XSERVER=${XSERVER%%:*}
-			;;
-		aterm | rxvt)
-			# Find some code that works here. ...
-			;;
-	esac
+    case $TERM in
+        xterm )
+            XSERVER=$(who am i | awk '{print $NF}' | tr -d ')''(' )
+            # Ane-Pieter Wieringa suggests the following alternative:
+             # I_AM=$(who am i)
+             # SERVER=${I_AM#*(}
+             # SERVER=${SERVER%*)}
+            XSERVER=${XSERVER%%:*}
+            ;;
+        aterm | rxvt)
+            # Find some code that works here. ...
+            ;;
+    esac
 }
 
 function legend ()
 {
-	echo " TIME:"
-	echo -e "    ${Green}Green${NC}     == machine load is low"
-	echo -e "    ${Orange}Orange${NC}    == machine load is medium"
-	echo -e "    ${RED}Red${NC}       == machine load is high"
-	echo -e "    ${ALERT}ALERT${NC}     == machine load is very high"
-	echo " USER:"
-	echo -e "    ${Cyan}Cyan${NC}      == normal user"
-	echo -e "    ${Orange}Orange${NC}    == SU to user"
-	echo -e "    ${Red}Red${NC}       == root"
-	echo " HOST:"
-	echo -e "    ${Cyan}Cyan${NC}      == local session"
-	echo -e "    ${Green}Green${NC}     == secured remote connection (via ssh)"
-	echo -e "    ${Red}Red${NC}       == unsecured remote connection"
-	echo " PWD:"
-	echo -e "    ${Green}Green${NC}     == more than 10% free disk space"
-	echo -e "    ${Orange}Orange${NC}    == less than 10% free disk space"
-	echo -e "    ${ALERT}ALERT${NC}     == less than 5% free disk space"
-	echo -e "    ${Red}Red${NC}       == current user does not have write privileges"
-	echo -e "    ${Cyan}Cyan${NC}      == current filesystem is size zero (like /proc)"
-	echo " >:"
-	echo -e "    ${White}White${NC}     == no background or suspended jobs in this shell"
-	echo -e "    ${Cyan}Cyan${NC}      == at least one background job in this shell"
-	echo -e "    ${Orange}Orange${NC}    == at least one suspended job in this shell"
+    echo " TIME:"
+    echo -e "    ${Green}Green${NC}     == machine load is low"
+    echo -e "    ${Orange}Orange${NC}    == machine load is medium"
+    echo -e "    ${Red}Red${NC}       == machine load is high"
+    echo -e "    ${ALERT}ALERT${NC}     == machine load is very high"
+    echo " USER:"
+    echo -e "    ${Cyan}Cyan${NC}      == normal user"
+    echo -e "    ${Orange}Orange${NC}    == SU to user"
+    echo -e "    ${Red}Red${NC}       == root"
+    echo " HOST:"
+    echo -e "    ${Cyan}Cyan${NC}      == local session"
+    echo -e "    ${Green}Green${NC}     == secured remote connection (via ssh)"
+    echo -e "    ${Red}Red${NC}       == unsecured remote connection"
+    echo " PWD:"
+    echo -e "    ${Green}Green${NC}     == more than 10% free disk space"
+    echo -e "    ${Orange}Orange${NC}    == less than 10% free disk space"
+    echo -e "    ${ALERT}ALERT${NC}     == less than 5% free disk space"
+    echo -e "    ${Red}Red${NC}       == current user does not have write privileges"
+    echo -e "    ${Cyan}Cyan${NC}      == current filesystem is size zero (like /proc)"
+    echo " >:"
+    echo -e "    ${White}White${NC}     == no background or suspended jobs in this shell"
+    echo -e "    ${Cyan}Cyan${NC}      == at least one background job in this shell"
+    echo -e "    ${Orange}Orange${NC}    == at least one suspended job in this shell"
 }
 
 
@@ -659,6 +647,4 @@ newwin() {
     newtab "$@" # Simply pass through to 'newtab', which will examine the call stack to see how it was invoked.
 }
 
-if [ "${ORDERFILE}" != '' ];then
-    echo "$0 .bash_functions        Stop" >> $ORDERFILE
-fi
+echo "$0 .bash_functions        Stop" >> $ORDERFILE

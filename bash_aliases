@@ -11,28 +11,29 @@ alias liner='echo -en "\n****************************************\n*************
 
 for i in 1 5 6 7 8
 do
-	alias nie0$i='ssh nie'0$i''
-	alias n$i='nie'0$i
-	alias nie0$i'p'='ssh nie'0$i'port'
-	alias n$i'p'='nie'0$i'p'
+    alias nie0$i='ssh nie'0$i''
+    alias n$i='nie'0$i
+    alias nie0$i'p'='ssh nie'0$i'port'
+    alias n$i'p'='nie'0$i'p'
 done
 
 for i in {1..2}
 do
-	alias sde$i='ssh sde0'$i''
-#	for j in {1..5}
-#	do
-#		alias nie$i$j='ssh nie'$i$j''
-#		alias n$i$j='nie'$i$j
-#	done
+    alias sde$i='ssh sde0'$i''
+#    for j in {1..5}
+#    do
+#        alias nie$i$j='ssh nie'$i$j''
+#        alias n$i$j='nie'$i$j
+#    done
 done
 
 alias ssh='liner;ssh'
 alias rasp='ssh rasp'
 alias n5nie='ssh n5nie'
-alias mcp='ssh n6mcp'
+alias mcp='ssh mcp'
 alias reno='ssh reno'
 alias vmtroot='ssh root@vmt '
+alias vmt6root='ssh root@vmt-dnvr '
 alias wam='ssh wam'
 alias wam2='liner;~/.ssh/scripts/wam2.expect'
 alias wamlab='ssh wamlab'
@@ -45,6 +46,7 @@ alias wambladenet='cd ~/Desktop/NIE/WAM\ Project/wam_blade_info;rm -f port_usage
 
 alias sshutsonusdev='sshuttle --pidfile=/tmp/sshuttle.pid -Dr sa 172.16.40.96/29'
 alias sshutx='[[ -f /tmp/sshuttle.pid ]] && kill $(cat /tmp/sshuttle.pid) && echo "Disconnected."'
+
 #-------------------
 # Voice/MCP Aliases
 #-------------------
@@ -75,27 +77,29 @@ alias cdalias='alias|\grep -E "=.cd \."'
 #-------------------------------------------------------------
 # Add colors for filetype and  human-readable sizes by default on 'ls':
 #if [ -x /usr/bin/dircolors ]; then
-#	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	alias ls='ls -hF --color=auto --group-directories-first'
-	alias ll='ls -lv'                       #  Long display with natural sort order by version number
-	alias lx='ls -XB'                       #  Sort by extension.
-	alias lk='ls -Sr'                       #  Sort by size, biggest last.
-	alias lt='ls -tr'                       #  Sort by date, most recent last.
-	alias lc='ls -tcr'                      #  Sort by/show change time,most recent last.
-	alias lu='ls -tur'                      #  Sort by/show access time,most recent last.
-	alias lm='ls -lv|less'                  #  Pipe through 'less'
-	alias l.='ls -lvd .*'                   #  Show only . files and directories.
-	alias lr='ls -R'			#  Recursive ls.
-	alias la='ls -al'			#  Show hidden files.
-	alias ldir='ls -ld -- */'	        #  Show only directories
-	alias tree='tree -CAsuh --dirsfirst'	#  Nice alternative to 'recursive ls' ...
+#    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls -h --file-type --color=auto --group-directories-first'
+    alias ll='ls -lv'                       #  Long display with natural sort order by version number
+    alias lx='ls -XB'                       #  Sort by extension.
+    alias lk='ls -Sr'                       #  Sort by size, biggest last.
+    alias lt='ls -tr'                       #  Sort by date, most recent last.
+    alias lc='ls -tcr'                      #  Sort by/show change time,most recent last.
+    alias lu='ls -tur'                      #  Sort by/show access time,most recent last.
+    alias lm='ls -lv|less'                #  Pipe through 'less'
+    alias l.='ls -lvd .*'                   #  Show only . files and directories.
+    alias lr='ls -R'            #  Recursive ls.
+    alias la='ls -al'            #  Show hidden files.
+    alias ldir='ls -ld -- */'            #  Show only directories
+    if exists tree;then
+        alias tree='tree -CAsuh --dirsfirst'        #  Nice alternative to 'recursive ls' ...
+    fi
 
-        alias dir='dir --color=auto'
-        alias vdir='vdir --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
-	alias grep='grep -n --color=auto'
-	alias fgrep='fgrep -n --color=auto'
-	alias egrep='egrep -n --color=auto'
+    alias grep='grep -n --color=auto'
+    alias fgrep='fgrep -n --color=auto'
+    alias egrep='egrep -n --color=auto'
 #fi
 
 # install  colordiff package :)
@@ -144,6 +148,10 @@ alias du='du -ch'
 
 alias e='exit'
 
+if [[ "$my_OS" = Darwin ]]; then
+    alias fixlync='rm -f /Users/sherr1/Library/Keychains/OC_KeyContainer__stephen.herr\@charter.com\-db'
+fi
+
 alias h='history'
 
 alias innot='ssh -t nie08 "innotop";exit'
@@ -157,51 +165,53 @@ alias mkdir='mkdir -pv'
 alias mysql='/usr/local/mysql/bin/mysql -p'
 
 if [[ "$my_OS" != Darwin ]]; then
-	alias mount='mount |column -t'
+    alias mount='mount |column -t'
 fi
 
-alias now='date +"%T'
+alias now='date +"%T"'
 alias nowtime=now
 alias nowdate='date +"%d-%m-%Y"'
 
 alias path='echo -e ${PATH//:/\\n}'
 
+alias taildir='tail -fn +1 $(ls -1tr|tail -1)'
+
 alias vnc='vncserver -geometry 1680x1050 -depth 24 -NeverShared -localhost'
 alias vncstatus='ps -fp $(pgrep -d, vnc)'
 alias vnckill='vncserver -kill :1'
 
-alias whence='type -a'						# where, of a sort
+alias whence='type -a'                        # where, of a sort
 alias which='type -a'
 
 # if user is not root, pass all commands via sudo #
 if [ $UID -ne 0 ]; then
-	if [[ "$my_OS" != Darwin ]]; then
-		alias ports="sudo netstat -antpul"
-	else
-	        alias ports='netstat -an -f inet'
-	        
-                alias pip='sudo pip'
-
-                alias npm='sudo npm'
-
-	        alias netstat='sudo netstat'
-	fi
+        if [[ "$my_OS" != Darwin ]]; then
+            alias ports='sudo netstat -antpul'
+            alias portslisten='sudo netstat -antpul|grep LIST'
+        else
+            alias ports='sudo netstat -an -f inet'
+            alias portslisten="sudo lsof -nP |\grep -E 'UDP|TCP'|\grep -vE 'CLOSED|\->'|awk '{print \$3, \$1, \$5, \$8\":\"\$9}'|sort -k3,4|uniq|column -t"
+            alias npm='sudo npm'
+            alias netstat='sudo netstat'
+        fi
 fi
 
-# get web server headers #
-alias header='curl -I'
+if exists curl; then
+        # get web server headers #
+        alias header='curl -I'
 
-# find out if remote server supports gzip / mod_deflate or not #
-alias headerc='curl -I --compress'
+        # find out if remote server supports gzip / mod_deflate or not #
+        alias headerc='curl -I --compress'
+fi
 
 # do not delete / or prompt if deleting more than 3 files at a time #
 alias rm='rm -i --preserve-root'
-
+ 
 # confirmation #
 alias mv='mv -i'
 alias cp='cp -i'
 alias ln='ln -i'
-
+ 
 # Parenting changing perms on / #
 alias chown='sudo chown --preserve-root'
 alias chmod='sudo chmod --preserve-root'
@@ -209,7 +219,7 @@ alias chgrp='sudo chgrp --preserve-root'
 
 # top is atop, just like vi is vim
 if exists atop; then
-	alias top='atop'
+    alias top='atop'
 elif exists htop; then
         alias top='htop -d 5'
 fi
@@ -227,42 +237,48 @@ fi
 
 ##### iptables Aliases ####
 ## shortcut  for iptables and pass it via sudo#
-alias ipt='sudo /sbin/iptables'
+if exists iptables; then
+        alias ipt='sudo /sbin/iptables'
 
-# display all rules #
-if exists /sbin/iptables; then
-    alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
-    alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
-    alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
-    alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
-    alias firewall=iptlist
+        # display all rules #
+        alias iptlist='ipt -L -n -v --line-numbers'
+        alias iptlistin='ipt -L INPUT -n -v --line-numbers'
+        alias iptlistout='ipt -L OUTPUT -n -v --line-numbers'
+        alias iptlistfw='ipt -L FORWARD -n -v --line-numbers'
+        alias firewall='iptlist'
 fi
 
 
 # distro specific  - Redhat #
 # install with apt-get
-if [[ "$my_OS" = Redhat ]]; then
-	alias apt-get="sudo apt-get"
-	alias updatey="sudo apt-get --yes"
-	# update on one command
-	alias update='sudo apt-get update && sudo apt-get upgrade'
+if [[ "$my_OS" == Redhat ]]; then
+    alias apt-get='sudo apt-get'
+    alias updatey='sudo apt-get --yes'
+    # update on one command
+    alias update='sudo apt-get update && sudo apt-get upgrade'
 elif [[ "$my_OS" = Darwin ]]; then
-        alias port='sudo port'
-        alias portupdate='port selfupdate && port upgrade outdated'
+    alias pip='sudo -H pip'
+    alias pipupdate="pip freeze --local|sed -rn 's/^([^=#\t\\][^t=]*)=.*/echo; echo Processing \1 ...; sudo -H pip install -U \1/p'|sh"
+    alias port='sudo port'
+    alias portupdate='port selfupdate && port installed outdated && port upgrade outdated && port -q reclaim'
+    alias portset='port select --set'
+    alias portsetlist='port select --summary'
 fi
 
+
 # reboot / halt / poweroff
-if [[ "$my_OS" != Darwin ]]; then
-    alias reboot='sudo /sbin/reboot'
-    alias poweroff='sudo /sbin/poweroff'
-    alias halt='sudo /sbin/halt'
-    alias shutdown='sudo /sbin/shutdown'
+alias reboot='sudo /sbin/reboot'
+alias halt='sudo /sbin/halt'
+alias shutdown='sudo /sbin/shutdown'
+if exists poweroff; then
+        alias poweroff='sudo /sbin/poweroff'
 fi
+
 
 if exists mplayer; then
     ## play video files in a current directory ##
     # cd ~/Download/movie-name
-    # playavi or vlc
+    # playavi
     alias playavi='mplayer *.avi'
 
     # play all music files from the current directory #
@@ -280,6 +296,9 @@ if exists mplayer; then
 fi
 
 if exists vlc; then
+    ## play video files in a current directory ##
+    # cd ~/Download/movie-name
+    # vlc
     alias vlc='vlc *.avi'
 fi
 
@@ -295,7 +314,9 @@ alias ethtool='ethtool eth1'
 alias iwconfig='iwconfig wlan0'
 
 ## pass options to free ##
-alias meminfo='free -m -l -t'
+if exists free; then
+    alias meminfo='free -m -l -t'
+fi
 
 ## get top process eating memory
 alias psmem='ps auxf | sort -nr -k 4'

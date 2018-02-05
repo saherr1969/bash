@@ -1,4 +1,7 @@
-echo "$0 .bash_prompt        Start" >> $ORDERFILE
+if [ "${ORDERFILE}" != '' ];then
+    echo "$0 .bash_prompt        Start" >> $ORDERFILE
+fi
+
 #-------------------------------------------------------------
 # Shell Prompt - for many examples, see:
 #       http://www.debian-administration.org/articles/205
@@ -103,7 +106,7 @@ else
 	NCPU=$(sysctl -n hw.ncpu)
 fi
 
-if [[ ${NCPU} != '' ]]; then
+if [[ ${NCPU} != '' ]];then
         SLOAD=$(( 100 * ${NCPU} ))        # Small load
         MLOAD=$(( 200 * ${NCPU} ))        # Medium load
         XLOAD=$(( 400 * ${NCPU} ))        # Xlarge load
@@ -135,4 +138,6 @@ esac
 PS4='(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} - [${SHLVL},${BASH_SUBSHELL}, $?]
 '
 
-echo "$0 .bash_prompt        Stop" >> $ORDERFILE
+if [ ${ORDERFILE} != '' ];then
+    echo "$0 .bash_prompt        Stop" >> $ORDERFILE
+fi
