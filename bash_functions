@@ -1,5 +1,12 @@
+##################################################
+# Stephen Herr
+# Email: saherr1969 <at> gmail <d0t> com
+#
+# Modified 2018-02-04
+#
+# #############
 # Functions
-# #########
+# #############
 
 if [ "${ORDERFILE}" != '' ];then
     echo "$0 .bash_functions        Start" >> $ORDERFILE

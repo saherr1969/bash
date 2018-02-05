@@ -5,6 +5,13 @@
 # the files are located in the bash-doc package.
 #
 #
+##################################################
+# Stephen Herr
+# Email: saherr1969 <at> gmail <d0t> com
+#
+# Modified 2018-02-04
+#
+
 # the default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
